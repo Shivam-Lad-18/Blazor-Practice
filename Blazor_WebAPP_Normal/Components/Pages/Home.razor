@@ -1,0 +1,78 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+@*OnInitialized Demo*@
+@* @if (items is not null) *@
+@* { *@
+@*     foreach (var item in items) *@
+@*     { *@
+@*         <p>@item</p> *@
+@*     } *@
+@* } *@
+
+
+
+@*OnParametersSet Demo*@
+<Child Name="@Name" />
+<button @onclick="ChangeName">Change Name</button>
+<h3>@Name
+</h3>
+
+
+@*ShouldRender   Demo*@
+<button @onclick="Increment">Increment</button>
+<h3>@counter</h3>
+
+
+Welcome to your new app.
+@code {
+    private List<string> items;
+    private Timer timer; 
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1000); // Simulate API call
+        items = new List<string> { "Item 1", "Item 2", "Item 3" };
+    }
+    protected override void OnInitialized()
+    {
+        timer = new Timer(_ => Console.WriteLine("Tick"), null, 0, 1000);
+    }
+    private string Name = "Blazor WebAssembly";
+    // pri 
+    void ChangeName()
+    {
+        Name = "Blazor WebAssembly 5.0";
+    }
+
+    private int counter = 0;
+
+    protected override bool ShouldRender()
+    {
+        return counter % 2 == 0; // Re-render only on even counts
+    }
+
+    void Increment() => counter++;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Console.WriteLine("Component rendered for the first time.");
+            await JS.InvokeVoidAsync("console.log", "JS interop after first render");
+        }
+    }
+
+    [Inject] private IJSRuntime JS { get; set; }
+
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+        Console.WriteLine("Timer disposed.");
+    }
+}

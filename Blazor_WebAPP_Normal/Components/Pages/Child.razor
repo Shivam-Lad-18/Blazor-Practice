@@ -1,0 +1,11 @@
+﻿<h3>Child</h3>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine($"Name parameter received: {Name}");
+    }
+}

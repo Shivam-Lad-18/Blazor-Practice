@@ -1,0 +1,37 @@
+﻿@page "/JS"
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+
+<h3>JavascriptDemo</h3>
+<button @onclick="CallJS">Call JS</button>
+
+<button onclick="callMethod('Shivam')">Call JS with parameter</button>
+
+<button @onclick="CallJSWithParameter">New Method 1</button>
+
+
+@code {
+    void CallJS()
+    {
+        JS.InvokeVoidAsync("console.log", "JS interop Demo");
+    }
+    [JSInvokable]
+    public static void CallFromJS(string message)
+    {
+        Console.WriteLine($"Message from JS: {message}");
+        // return Task.FromResult<string>(message);
+    }
+
+    private async Task CallJSWithParameter()
+    {
+        JS.InvokeVoidAsync("Method1",DotNetObjectReference.Create(this));
+        Console.WriteLine(" CallJSWithParameter This method called");
+    }
+
+    [JSInvokable]
+    public Task<string> NewMethod()
+    {
+        Console.WriteLine($"Message from JS:");
+        return Task.FromResult<string>("New Meth");
+    }
+}
